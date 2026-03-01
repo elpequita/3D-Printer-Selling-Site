@@ -1,0 +1,68 @@
+#!/bin/bash
+# Create SVG placeholder images for each product
+IMGS_DIR="/home/user/webapp/public/static/images"
+
+create_svg() {
+  local filename="$1"
+  local title="$2"
+  local bg_color="$3"
+  local icon="$4"
+  
+  cat > "$IMGS_DIR/$filename" << SVG
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:$bg_color;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0f172a;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="cube" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0.9" />
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg)"/>
+  <!-- 3D Cube illustration -->
+  <g transform="translate(200,180)">
+    <!-- Top face -->
+    <polygon points="0,-70 70,-35 0,0 -70,-35" fill="#93c5fd" opacity="0.9"/>
+    <!-- Left face -->
+    <polygon points="-70,-35 0,0 0,70 -70,35" fill="#3b82f6" opacity="0.9"/>
+    <!-- Right face -->
+    <polygon points="70,-35 0,0 0,70 70,35" fill="#2563eb" opacity="0.9"/>
+    <!-- Cube edges -->
+    <line x1="0" y1="-70" x2="70" y2="-35" stroke="#bfdbfe" stroke-width="1.5" opacity="0.6"/>
+    <line x1="0" y1="-70" x2="-70" y2="-35" stroke="#bfdbfe" stroke-width="1.5" opacity="0.6"/>
+    <line x1="0" y1="-70" x2="0" y2="0" stroke="#bfdbfe" stroke-width="1.5" opacity="0.6"/>
+    <line x1="70" y1="-35" x2="70" y2="35" stroke="#bfdbfe" stroke-width="1" opacity="0.5"/>
+    <line x1="-70" y1="-35" x2="-70" y2="35" stroke="#bfdbfe" stroke-width="1" opacity="0.5"/>
+    <line x1="70" y1="35" x2="0" y2="70" stroke="#bfdbfe" stroke-width="1" opacity="0.5"/>
+    <line x1="-70" y1="35" x2="0" y2="70" stroke="#bfdbfe" stroke-width="1" opacity="0.5"/>
+  </g>
+  <!-- Title text -->
+  <text x="200" y="310" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" font-weight="700" fill="#e2e8f0">$title</text>
+  <text x="200" y="340" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#94a3b8">3D Creations PR</text>
+  <!-- Corner dots -->
+  <circle cx="20" cy="20" r="3" fill="#3b82f6" opacity="0.5"/>
+  <circle cx="380" cy="20" r="3" fill="#3b82f6" opacity="0.5"/>
+  <circle cx="20" cy="380" r="3" fill="#3b82f6" opacity="0.5"/>
+  <circle cx="380" cy="380" r="3" fill="#3b82f6" opacity="0.5"/>
+  <!-- Grid lines -->
+  <line x1="0" y1="0" x2="400" y2="0" stroke="#1e40af" stroke-width="0.5" opacity="0.3"/>
+  <line x1="0" y1="0" x2="0" y2="400" stroke="#1e40af" stroke-width="0.5" opacity="0.3"/>
+</svg>
+SVG
+}
+
+# Create images for each product
+create_svg "product-custom-name.svg" "Name Plate" "#1e3a8a" "cube"
+create_svg "product-geometric-plant.svg" "Plant Pot" "#14532d" "cube"
+create_svg "product-custom-phone.svg" "Phone Stand" "#1c1917" "cube"
+create_svg "product-dragon-miniature.svg" "Dragon Fig." "#450a0a" "star"
+create_svg "product-custom-keychain.svg" "Keychain" "#1e1b4b" "gem"
+create_svg "product-wall-art.svg" "Wall Art" "#0c4a6e" "cube"
+create_svg "product-keycaps-set.svg" "Keycaps" "#1a1a2e" "cube"
+create_svg "product-architectural-scale.svg" "Arch. Model" "#1e293b" "cube"
+create_svg "hero-bg.svg" "3D Print" "#0f172a" "cube"
+
+echo "Created $(ls $IMGS_DIR | wc -l) SVG images"
+ls $IMGS_DIR
