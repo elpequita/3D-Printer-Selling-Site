@@ -3,152 +3,120 @@ export function getContactPage(settings: Record<string, string>): string {
   const email = settings.contact_email || 'carlos.perez@dataurea.com'
 
   return `
-<div class="min-h-screen bg-gray-50">
+<div style="min-height:100vh">
   <!-- Header -->
-  <div class="bg-gradient-to-br from-blue-900 to-gray-900 text-white py-16">
-    <div class="max-w-7xl mx-auto px-4 text-center">
-      <h1 class="text-4xl font-extrabold mb-4">Get In Touch</h1>
-      <p class="text-blue-200 text-xl max-w-2xl mx-auto">Have a project idea, question, or custom order? We'd love to hear from you.</p>
+  <section style="position:relative;overflow:hidden;padding:80px 24px;text-align:center">
+    <div class="orb orb-cyan" style="width:500px;height:500px;top:-200px;left:-100px;opacity:0.5"></div>
+    <div class="orb orb-purple" style="width:400px;height:400px;bottom:-150px;right:-80px;opacity:0.4"></div>
+    <div class="bg-grid" style="position:absolute;inset:0;opacity:0.3"></div>
+    <div style="position:relative;z-index:1">
+      <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(0,245,255,0.08);border:1px solid rgba(0,245,255,0.2);color:var(--neon-cyan);padding:8px 18px;border-radius:50px;font-size:13px;font-weight:600;margin-bottom:20px">
+        <i class="fas fa-comments"></i>Let's Talk
+      </div>
+      <h1 class="font-display" style="font-size:clamp(28px,4vw,52px);font-weight:900;color:#fff;margin-bottom:16px">Get In Touch</h1>
+      <p style="color:var(--text-secondary);font-size:17px;max-width:520px;margin:0 auto;line-height:1.7">Have a project idea, custom order, or question? We'd love to hear from you.</p>
     </div>
-  </div>
+  </section>
 
-  <div class="max-w-6xl mx-auto px-4 py-16">
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <!-- Contact Info -->
-      <div class="space-y-6">
-        <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
-          <h2 class="text-xl font-bold text-gray-900 mb-5">Contact Information</h2>
-          <div class="space-y-5">
-            <div class="flex items-start space-x-4">
-              <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                <i class="fas fa-phone-alt text-blue-600 text-lg"></i>
+  <div style="max-width:1100px;margin:0 auto;padding:0 24px 80px">
+    <div style="display:grid;grid-template-columns:1fr;gap:24px" id="contact-layout">
+      <!-- Left Panel -->
+      <div style="display:flex;flex-direction:column;gap:20px">
+        <!-- Contact Info Card -->
+        <div class="glass-card" style="border-radius:24px;padding:28px">
+          <h2 style="font-size:17px;font-weight:700;color:#fff;margin-bottom:24px">Contact Information</h2>
+          <div style="display:flex;flex-direction:column;gap:20px">
+            ${[
+              { icon:'fa-phone-alt', neon:'var(--neon-green)', label:'Phone', val: phone, href:'tel:'+phone, note:'Mon-Fri 9am-6pm AST' },
+              { icon:'fa-envelope', neon:'var(--neon-cyan)', label:'Email', val: email, href:'mailto:'+email, note:'We respond within 24 hours' },
+              { icon:'fa-map-marker-alt', neon:'var(--neon-purple)', label:'Location', val:'Puerto Rico, USA', href:'', note:'Shipping available island-wide' },
+              { icon:'fa-clock', neon:'var(--neon-orange)', label:'Hours', val:'Mon–Fri 9am–6pm', href:'', note:'Saturday: 10am–4pm' },
+            ].map(c => `
+            <div style="display:flex;align-items:flex-start;gap:16px">
+              <div style="width:46px;height:46px;background:linear-gradient(135deg,rgba(0,245,255,0.08),rgba(191,0,255,0.06));border:1px solid rgba(255,255,255,0.08);border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <i class="fas ${c.icon}" style="color:${c.neon};font-size:16px;filter:drop-shadow(0 0 6px ${c.neon})"></i>
               </div>
               <div>
-                <h3 class="font-semibold text-gray-900">Phone</h3>
-                <a href="tel:${phone}" class="text-blue-600 hover:text-blue-700 text-lg font-bold">${phone}</a>
-                <p class="text-xs text-gray-400 mt-1">Mon-Fri 9am-6pm AST</p>
+                <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px">${c.label}</div>
+                ${c.href ? `<a href="${c.href}" style="font-size:15px;font-weight:700;color:#fff;text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='${c.neon}'" onmouseout="this.style.color='#fff'">${c.val}</a>` : `<div style="font-size:15px;font-weight:600;color:#fff">${c.val}</div>`}
+                <div style="font-size:12px;color:var(--text-muted);margin-top:2px">${c.note}</div>
               </div>
-            </div>
-            <div class="flex items-start space-x-4">
-              <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                <i class="fas fa-envelope text-blue-600 text-lg"></i>
-              </div>
-              <div>
-                <h3 class="font-semibold text-gray-900">Email</h3>
-                <a href="mailto:${email}" class="text-blue-600 hover:text-blue-700 break-all">${email}</a>
-                <p class="text-xs text-gray-400 mt-1">We respond within 24 hours</p>
-              </div>
-            </div>
-            <div class="flex items-start space-x-4">
-              <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                <i class="fas fa-map-marker-alt text-blue-600 text-lg"></i>
-              </div>
-              <div>
-                <h3 class="font-semibold text-gray-900">Location</h3>
-                <p class="text-gray-600">Puerto Rico, USA</p>
-                <p class="text-xs text-gray-400 mt-1">Shipping available island-wide</p>
-              </div>
-            </div>
-            <div class="flex items-start space-x-4">
-              <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                <i class="fas fa-clock text-blue-600 text-lg"></i>
-              </div>
-              <div>
-                <h3 class="font-semibold text-gray-900">Business Hours</h3>
-                <p class="text-gray-600 text-sm">Monday – Friday: 9am – 6pm</p>
-                <p class="text-gray-600 text-sm">Saturday: 10am – 4pm</p>
-                <p class="text-gray-400 text-sm">Sunday: Closed</p>
-              </div>
-            </div>
+            </div>`).join('')}
           </div>
         </div>
 
         <!-- What We Offer -->
-        <div class="bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-6 text-white">
-          <h3 class="font-bold text-lg mb-4">What We Offer</h3>
-          <ul class="space-y-3 text-sm text-blue-100">
-            ${[
-              'FDM & Resin 3D Printing',
-              'Custom design consultation',
-              'Prototype development',
-              'Bulk order discounts',
-              'Rush orders available',
-              'Material samples available',
-            ].map(item => `<li class="flex items-center"><i class="fas fa-check-circle mr-2 text-green-400"></i>${item}</li>`).join('')}
+        <div style="border-radius:24px;padding:28px;background:linear-gradient(135deg,rgba(0,245,255,0.06),rgba(191,0,255,0.04));border:1px solid rgba(0,245,255,0.15)">
+          <h3 style="font-weight:700;color:#fff;font-size:16px;margin-bottom:18px">What We Offer</h3>
+          <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:12px">
+            ${['FDM & Resin 3D Printing','Custom design consultation','Prototype development','Bulk order discounts','Rush orders available','Material samples available'].map(item =>
+              `<li style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-secondary)"><i class="fas fa-check-circle" style="color:var(--neon-green);flex-shrink:0;filter:drop-shadow(0 0 4px var(--neon-green))"></i>${item}</li>`
+            ).join('')}
           </ul>
         </div>
 
         <!-- Quick Actions -->
-        <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
-          <h3 class="font-bold text-gray-900 mb-4">Quick Actions</h3>
-          <div class="space-y-3">
-            <a href="tel:${phone}" class="flex items-center justify-between p-3 bg-green-50 hover:bg-green-100 rounded-xl transition-colors group">
-              <span class="flex items-center text-green-700 font-medium"><i class="fas fa-phone-alt mr-3 text-green-600"></i>Call Now</span>
-              <i class="fas fa-arrow-right text-green-500 group-hover:translate-x-1 transition-transform"></i>
-            </a>
-            <a href="mailto:${email}" class="flex items-center justify-between p-3 bg-blue-50 hover:bg-blue-100 rounded-xl transition-colors group">
-              <span class="flex items-center text-blue-700 font-medium"><i class="fas fa-envelope mr-3 text-blue-600"></i>Send Email</span>
-              <i class="fas fa-arrow-right text-blue-500 group-hover:translate-x-1 transition-transform"></i>
-            </a>
-            <a href="/preview" class="flex items-center justify-between p-3 bg-orange-50 hover:bg-orange-100 rounded-xl transition-colors group">
-              <span class="flex items-center text-orange-700 font-medium"><i class="fas fa-magic mr-3 text-orange-600"></i>3D Preview Tool</span>
-              <i class="fas fa-arrow-right text-orange-500 group-hover:translate-x-1 transition-transform"></i>
-            </a>
+        <div class="glass-card" style="border-radius:24px;padding:24px">
+          <h3 style="font-weight:700;color:#fff;font-size:15px;margin-bottom:16px">Quick Actions</h3>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            ${[
+              { href:'tel:'+phone, icon:'fa-phone-alt', label:'Call Now', neon:'var(--neon-green)', bg:'rgba(0,255,136,0.06)', border:'rgba(0,255,136,0.2)' },
+              { href:'mailto:'+email, icon:'fa-envelope', label:'Send Email', neon:'var(--neon-cyan)', bg:'rgba(0,245,255,0.06)', border:'rgba(0,245,255,0.2)' },
+              { href:'/preview', icon:'fa-cube', label:'3D Preview Tool', neon:'var(--neon-purple)', bg:'rgba(191,0,255,0.06)', border:'rgba(191,0,255,0.2)' },
+            ].map(q => `
+            <a href="${q.href}" style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:${q.bg};border:1px solid ${q.border};border-radius:14px;text-decoration:none;transition:all 0.2s"
+               onmouseover="this.style.transform='translateX(4px)'" onmouseout="this.style.transform='none'">
+              <span style="display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;color:#fff">
+                <i class="fas ${q.icon}" style="color:${q.neon}"></i>${q.label}
+              </span>
+              <i class="fas fa-arrow-right" style="color:${q.neon};font-size:12px"></i>
+            </a>`).join('')}
           </div>
         </div>
       </div>
 
       <!-- Contact Form -->
-      <div class="lg:col-span-2">
-        <div class="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm">
-          <h2 class="text-2xl font-bold text-gray-900 mb-2">Send Us a Message</h2>
-          <p class="text-gray-500 mb-6">Fill out the form and we'll get back to you as soon as possible.</p>
-          
-          <div id="contact-success" class="hidden bg-green-50 border border-green-200 rounded-xl p-4 mb-6">
-            <div class="flex items-center text-green-700">
-              <i class="fas fa-check-circle text-2xl mr-3"></i>
-              <div>
-                <h4 class="font-bold">Message Sent!</h4>
-                <p class="text-sm">Thank you! We'll get back to you within 24 hours.</p>
-              </div>
+      <div>
+        <div class="glass-card" style="border-radius:24px;padding:36px">
+          <h2 class="font-display" style="font-size:22px;font-weight:800;color:#fff;margin-bottom:8px">Send Us a Message</h2>
+          <p style="color:var(--text-secondary);margin-bottom:28px;font-size:14px">Fill out the form and we'll get back to you as soon as possible.</p>
+
+          <div id="contact-success" style="display:none;background:rgba(0,255,136,0.06);border:1px solid rgba(0,255,136,0.25);border-radius:16px;padding:16px;margin-bottom:20px">
+            <div style="display:flex;align-items:center;gap:12px;color:var(--neon-green)">
+              <i class="fas fa-check-circle" style="font-size:24px;filter:drop-shadow(0 0 8px var(--neon-green))"></i>
+              <div><div style="font-weight:700;margin-bottom:2px">Message Sent!</div><div style="font-size:13px;color:var(--text-secondary)">Thank you! We'll get back to you within 24 hours.</div></div>
             </div>
           </div>
-          
-          <div id="contact-error" class="hidden bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
-            <div class="flex items-center text-red-700">
-              <i class="fas fa-exclamation-circle text-2xl mr-3"></i>
-              <div>
-                <h4 class="font-bold">Oops!</h4>
-                <p id="contact-error-msg" class="text-sm">Something went wrong. Please try again.</p>
-              </div>
+          <div id="contact-error" style="display:none;background:rgba(255,80,80,0.06);border:1px solid rgba(255,80,80,0.25);border-radius:16px;padding:16px;margin-bottom:20px">
+            <div style="display:flex;align-items:center;gap:12px;color:#ff5555">
+              <i class="fas fa-exclamation-circle" style="font-size:24px"></i>
+              <div><div style="font-weight:700;margin-bottom:2px">Oops!</div><div id="contact-error-msg" style="font-size:13px;color:var(--text-secondary)">Something went wrong. Please try again.</div></div>
             </div>
           </div>
 
-          <form id="contact-form" class="space-y-5">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <form id="contact-form" style="display:flex;flex-direction:column;gap:18px">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px" class="form-grid">
               <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">Full Name *</label>
-                <input type="text" id="contact-name" required
-                       placeholder="Carlos Pérez"
-                       class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                <label style="display:block;font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Full Name *</label>
+                <input type="text" id="contact-name" required placeholder="Carlos Pérez"
+                       class="dark-input" style="width:100%;padding:12px 16px;border-radius:12px;font-size:14px;font-family:inherit">
               </div>
               <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">Email Address *</label>
-                <input type="email" id="contact-email" required
-                       placeholder="you@example.com"
-                       class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                <label style="display:block;font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Email Address *</label>
+                <input type="email" id="contact-email" required placeholder="you@example.com"
+                       class="dark-input" style="width:100%;padding:12px 16px;border-radius:12px;font-size:14px;font-family:inherit">
               </div>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px" class="form-grid">
               <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">Phone Number</label>
-                <input type="tel" id="contact-phone"
-                       placeholder="787-XXX-XXXX"
-                       class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                <label style="display:block;font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Phone Number</label>
+                <input type="tel" id="contact-phone" placeholder="787-XXX-XXXX"
+                       class="dark-input" style="width:100%;padding:12px 16px;border-radius:12px;font-size:14px;font-family:inherit">
               </div>
               <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">Subject</label>
-                <select id="contact-subject" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                <label style="display:block;font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Subject</label>
+                <select id="contact-subject"
+                        class="dark-input" style="width:100%;padding:12px 16px;border-radius:12px;font-size:14px;font-family:inherit">
                   <option>General Inquiry</option>
                   <option>Custom Order Request</option>
                   <option>Pricing Question</option>
@@ -160,19 +128,17 @@ export function getContactPage(settings: Record<string, string>): string {
               </div>
             </div>
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">Message *</label>
-              <textarea id="contact-message" required rows="6"
-                        placeholder="Tell us about your project, dimensions needed, quantity, timeline, or any questions you have..."
-                        class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"></textarea>
+              <label style="display:block;font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Message *</label>
+              <textarea id="contact-message" required rows="6" placeholder="Tell us about your project, dimensions needed, quantity, timeline, or any questions you have..."
+                        class="dark-input" style="width:100%;padding:12px 16px;border-radius:12px;font-size:14px;resize:none;font-family:inherit"></textarea>
             </div>
-            <div class="flex items-start space-x-3">
-              <input type="checkbox" id="terms" required class="mt-1 text-blue-600 focus:ring-blue-500">
-              <label for="terms" class="text-sm text-gray-600">
+            <div style="display:flex;align-items:flex-start;gap:10px">
+              <input type="checkbox" id="terms" required style="margin-top:3px;accent-color:var(--neon-cyan)">
+              <label for="terms" style="font-size:13px;color:var(--text-secondary);line-height:1.6;cursor:pointer">
                 I agree to be contacted regarding my inquiry. We respect your privacy and won't spam you.
               </label>
             </div>
-            <button type="submit" id="contact-submit" 
-                    class="btn-primary w-full text-white py-4 rounded-xl font-bold text-lg shadow-lg">
+            <button type="submit" id="contact-submit" class="btn-solid-cyan" style="padding:16px;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;width:100%">
               <i class="fas fa-paper-plane mr-2"></i>Send Message
             </button>
           </form>
@@ -182,15 +148,23 @@ export function getContactPage(settings: Record<string, string>): string {
   </div>
 </div>
 
+<style>
+@media(min-width:768px) {
+  #contact-layout { grid-template-columns: 360px 1fr !important; }
+}
+@media(max-width:480px) {
+  .form-grid { grid-template-columns: 1fr !important; }
+}
+</style>
+
 <script>
 document.getElementById('contact-form').addEventListener('submit', async function(e) {
   e.preventDefault();
   const btn = document.getElementById('contact-submit');
   btn.disabled = true;
   btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Sending...';
-  document.getElementById('contact-success').classList.add('hidden');
-  document.getElementById('contact-error').classList.add('hidden');
-
+  document.getElementById('contact-success').style.display = 'none';
+  document.getElementById('contact-error').style.display = 'none';
   try {
     const res = await axios.post('/api/contact', {
       name: document.getElementById('contact-name').value,
@@ -200,14 +174,14 @@ document.getElementById('contact-form').addEventListener('submit', async functio
       message: document.getElementById('contact-message').value
     });
     if (res.data.success) {
-      document.getElementById('contact-success').classList.remove('hidden');
+      document.getElementById('contact-success').style.display = 'block';
       document.getElementById('contact-form').reset();
-      document.getElementById('contact-success').scrollIntoView({ behavior: 'smooth' });
+      document.getElementById('contact-success').scrollIntoView({ behavior:'smooth' });
     }
   } catch(err) {
     const msg = err.response?.data?.error || 'Something went wrong. Please try again.';
     document.getElementById('contact-error-msg').textContent = msg;
-    document.getElementById('contact-error').classList.remove('hidden');
+    document.getElementById('contact-error').style.display = 'block';
   } finally {
     btn.disabled = false;
     btn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Send Message';

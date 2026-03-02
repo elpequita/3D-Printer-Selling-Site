@@ -3,221 +3,221 @@ export function getProductDetailPage(product: any, relatedProducts: any[], setti
   const primaryImage = images.find((i: any) => i.is_primary) || images[0]
   const dims = product.dimensions_mm ? (() => { try { return JSON.parse(product.dimensions_mm) } catch { return null } })() : null
   const displayPrice = product.sale_price
-    ? `<div><span class="text-gray-400 line-through text-xl">$${parseFloat(product.price).toFixed(2)}</span><span class="text-blue-600 font-extrabold text-3xl ml-2">$${parseFloat(product.sale_price).toFixed(2)}</span></div>`
-    : `<span class="text-blue-600 font-extrabold text-3xl">$${parseFloat(product.price).toFixed(2)}</span>`
+    ? `<div style="display:flex;align-items:baseline;gap:10px"><span style="color:var(--text-secondary);text-decoration:line-through;font-size:18px">$${parseFloat(product.price).toFixed(2)}</span><span style="color:var(--neon-cyan);font-weight:900;font-size:36px;filter:drop-shadow(0 0 12px rgba(0,245,255,0.4))">$${parseFloat(product.sale_price).toFixed(2)}</span></div>`
+    : `<span style="color:var(--neon-cyan);font-weight:900;font-size:36px;filter:drop-shadow(0 0 12px rgba(0,245,255,0.4))">$${parseFloat(product.price).toFixed(2)}</span>`
 
   const imageGallery = images.length > 0 ? images.map((img: any, idx: number) => `
-    <button onclick="showImage('${img.url}', this)" class="gallery-thumb w-16 h-16 rounded-xl overflow-hidden border-2 ${idx === 0 ? 'border-blue-500' : 'border-gray-200'} hover:border-blue-400 transition-all flex-shrink-0">
-      <img src="${img.url}" alt="${img.alt_text || product.name}" class="w-full h-full object-cover"
+    <button onclick="showImage('${img.url}', this)"
+            style="width:64px;height:64px;border-radius:12px;overflow:hidden;border:2px solid ${idx === 0 ? 'var(--neon-cyan)' : 'rgba(255,255,255,0.08)'};flex-shrink:0;cursor:pointer;padding:0;background:transparent;transition:border-color 0.2s"
+            class="gallery-thumb">
+      <img src="${img.url}" alt="${img.alt_text || product.name}" style="width:100%;height:100%;object-fit:cover"
            onerror="this.parentNode.style.display='none'">
     </button>`).join('') : ''
 
   const relatedCards = relatedProducts.map(p => `
-    <a href="/products/${p.slug}" class="card-hover bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 group">
-      <div class="h-36 product-image-placeholder overflow-hidden">
-        <img src="${p.primary_image || ''}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-             onerror="this.style.display='none';this.parentNode.innerHTML+='<div class=\\'flex items-center justify-center h-full\\'><i class=\\"fas fa-cube text-blue-300 text-3xl\\"></i></div>'">
+    <a href="/products/${p.slug}" style="display:block;text-decoration:none;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,0.06);background:rgba(13,20,36,0.6);transition:all 0.3s"
+       onmouseover="this.style.borderColor='rgba(0,245,255,0.25)';this.style.transform='translateY(-3px)'"
+       onmouseout="this.style.borderColor='rgba(255,255,255,0.06)';this.style.transform='none'">
+      <div style="height:130px;background:linear-gradient(135deg,#080d18,#101829);overflow:hidden">
+        <img src="${p.primary_image || ''}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s"
+             onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'"
+             onerror="this.style.display='none';this.parentNode.innerHTML+='<div style=\\"display:flex;align-items:center;justify-content:center;height:100%\\"><i class=\\"fas fa-cube\\" style=\\"color:var(--neon-cyan);font-size:32px\\"></i></div>'">
       </div>
-      <div class="p-3">
-        <h4 class="font-bold text-gray-900 text-sm leading-tight mb-1 group-hover:text-blue-600">${p.name}</h4>
-        <span class="text-blue-600 font-bold text-sm">$${parseFloat(p.price).toFixed(2)}</span>
+      <div style="padding:12px 14px">
+        <h4 style="font-size:13px;font-weight:700;color:#fff;margin-bottom:6px;line-height:1.3">${p.name}</h4>
+        <span style="color:var(--neon-cyan);font-weight:700;font-size:14px">$${parseFloat(p.price).toFixed(2)}</span>
       </div>
     </a>`).join('')
 
+  const specs = [
+    ['Material', product.material, 'fa-layer-group'],
+    ['Color', product.color, 'fa-palette'],
+    ...(product.weight_grams ? [['Weight', `${product.weight_grams}g`, 'fa-weight']] : []),
+    ...(dims ? [['Dimensions', `${dims.x}×${dims.y}×${dims.z}mm`, 'fa-ruler-combined']] : []),
+    ...(product.print_time_hours ? [['Print Time', `${product.print_time_hours}h`, 'fa-hourglass-half']] : []),
+    ['Lead Time', `${product.lead_time_days || 3} days`, 'fa-truck'],
+  ] as [string, string, string][]
+
   return `
-<div class="max-w-7xl mx-auto px-4 py-8">
+<div style="max-width:1280px;margin:0 auto;padding:32px 24px">
   <!-- Breadcrumb -->
-  <nav class="flex items-center space-x-2 text-sm text-gray-500 mb-8">
-    <a href="/" class="hover:text-blue-600 transition-colors">Home</a>
-    <i class="fas fa-chevron-right text-xs"></i>
-    <a href="/products" class="hover:text-blue-600 transition-colors">Products</a>
-    ${product.category_name ? `<i class="fas fa-chevron-right text-xs"></i><a href="/products?category=${product.category_slug}" class="hover:text-blue-600">${product.category_name}</a>` : ''}
-    <i class="fas fa-chevron-right text-xs"></i>
-    <span class="text-gray-900 font-medium">${product.name}</span>
+  <nav style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-muted);margin-bottom:36px;flex-wrap:wrap">
+    <a href="/" style="color:var(--text-secondary);text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='var(--neon-cyan)'" onmouseout="this.style.color='var(--text-secondary)'">Home</a>
+    <i class="fas fa-chevron-right" style="font-size:10px;color:var(--text-muted)"></i>
+    <a href="/products" style="color:var(--text-secondary);text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='var(--neon-cyan)'" onmouseout="this.style.color='var(--text-secondary)'">Products</a>
+    ${product.category_name ? `<i class="fas fa-chevron-right" style="font-size:10px;color:var(--text-muted)"></i><a href="/products?category=${product.category_slug}" style="color:var(--text-secondary);text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='var(--neon-cyan)'" onmouseout="this.style.color='var(--text-secondary)'">${product.category_name}</a>` : ''}
+    <i class="fas fa-chevron-right" style="font-size:10px;color:var(--text-muted)"></i>
+    <span style="color:#fff;font-weight:500">${product.name}</span>
   </nav>
 
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+  <div style="display:grid;grid-template-columns:1fr;gap:40px;margin-bottom:64px" id="product-layout">
     <!-- Image Section -->
-    <div>
-      <div id="main-image-container" class="relative aspect-square rounded-2xl overflow-hidden product-image-placeholder mb-4 shadow-lg">
+    <div id="product-images">
+      <div id="main-image-container" style="position:relative;aspect-ratio:1;border-radius:24px;overflow:hidden;background:linear-gradient(135deg,#080d18,#101829);border:1px solid rgba(0,245,255,0.12);box-shadow:0 0 40px rgba(0,0,0,0.5);margin-bottom:16px">
         ${primaryImage ? `
-        <img id="main-image" src="${primaryImage.url}" alt="${product.name}" 
-             class="w-full h-full object-cover"
-             onerror="this.style.display='none';document.getElementById('main-image-placeholder').style.display='flex'">
-        <div id="main-image-placeholder" class="absolute inset-0 flex items-center justify-center" style="display:none">
-          <i class="fas fa-cube text-blue-300 text-8xl opacity-50"></i>
+        <img id="main-image" src="${primaryImage.url}" alt="${product.name}"
+             style="width:100%;height:100%;object-fit:cover"
+             onerror="this.style.display='none';document.getElementById('main-img-ph').style.display='flex'">
+        <div id="main-img-ph" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center">
+          <i class="fas fa-cube" style="color:var(--neon-cyan);font-size:80px;filter:drop-shadow(0 0 20px rgba(0,245,255,0.5))"></i>
         </div>` : `
-        <div class="absolute inset-0 flex items-center justify-center">
-          <i class="fas fa-cube text-blue-300 text-8xl opacity-50"></i>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
+          <i class="fas fa-cube" style="color:var(--neon-cyan);font-size:80px;filter:drop-shadow(0 0 20px rgba(0,245,255,0.5))"></i>
         </div>`}
         ${product.is_customizable ? `
-        <div class="absolute top-4 left-4">
-          <span class="bg-orange-500 text-white text-sm px-3 py-1 rounded-full font-semibold shadow-lg">
+        <div style="position:absolute;top:16px;left:16px">
+          <span style="background:linear-gradient(135deg,#ff6b00,#ff0080);color:#fff;font-size:12px;padding:5px 14px;border-radius:50px;font-weight:700;box-shadow:0 4px 15px rgba(255,107,0,0.4)">
             <i class="fas fa-magic mr-1"></i>Customizable
           </span>
         </div>` : ''}
+        <!-- Scan line corner decoration -->
+        <div style="position:absolute;top:12px;right:12px;width:24px;height:24px;border-top:2px solid rgba(0,245,255,0.4);border-right:2px solid rgba(0,245,255,0.4);border-radius:0 6px 0 0"></div>
+        <div style="position:absolute;bottom:12px;left:12px;width:24px;height:24px;border-bottom:2px solid rgba(0,245,255,0.4);border-left:2px solid rgba(0,245,255,0.4);border-radius:0 0 0 6px"></div>
       </div>
       ${images.length > 1 ? `
-      <div class="flex space-x-3 overflow-x-auto pb-2">
+      <div style="display:flex;gap:10px;overflow-x:auto;padding-bottom:4px">
         ${imageGallery}
       </div>` : ''}
     </div>
 
     <!-- Product Info -->
-    <div>
-      <div class="flex items-start justify-between mb-2">
+    <div id="product-info">
+      ${product.category_name ? `<span style="font-size:12px;font-weight:700;color:var(--neon-cyan);text-transform:uppercase;letter-spacing:2px">${product.category_name}</span>` : ''}
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-top:8px;margin-bottom:16px">
+        <h1 class="font-display" style="font-size:clamp(22px,3vw,32px);font-weight:800;color:#fff;line-height:1.2">${product.name}</h1>
         <div>
-          ${product.category_name ? `<span class="text-blue-500 font-semibold text-sm uppercase tracking-wide">${product.category_name}</span>` : ''}
-          <h1 class="text-3xl font-extrabold text-gray-900 mt-1">${product.name}</h1>
-        </div>
-        <div class="flex items-center ml-4">
-          ${product.is_available ? '<span class="flex items-center text-green-600 text-sm font-semibold"><span class="w-2 h-2 bg-green-500 rounded-full mr-1.5"></span>In Stock</span>' : '<span class="flex items-center text-red-500 text-sm font-semibold"><span class="w-2 h-2 bg-red-500 rounded-full mr-1.5"></span>Unavailable</span>'}
+          ${product.is_available
+            ? '<span style="display:flex;align-items:center;gap:6px;color:var(--neon-green);font-size:13px;font-weight:600;white-space:nowrap"><span style="width:8px;height:8px;background:var(--neon-green);border-radius:50%;box-shadow:0 0 8px var(--neon-green)"></span>In Stock</span>'
+            : '<span style="display:flex;align-items:center;gap:6px;color:#ff5555;font-size:13px;font-weight:600;white-space:nowrap"><span style="width:8px;height:8px;background:#ff5555;border-radius:50%"></span>Unavailable</span>'}
         </div>
       </div>
 
-      <div class="flex items-center mb-4">
-        <div class="flex text-yellow-400 mr-2">
-          <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+      <!-- Stars -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px">
+        <div style="color:#f59e0b;display:flex;gap:2px">
+          ${[...Array(4)].map(() => '<i class="fas fa-star" style="font-size:14px"></i>').join('')}
+          <i class="fas fa-star-half-alt" style="font-size:14px;color:#f59e0b"></i>
         </div>
-        <span class="text-sm text-gray-500">(4.8 / 5 average)</span>
+        <span style="font-size:13px;color:var(--text-muted)">(4.8 / 5 average)</span>
       </div>
 
-      ${displayPrice}
-      ${product.sale_price ? '<p class="text-sm text-green-600 font-medium mt-1"><i class="fas fa-tag mr-1"></i>Special pricing applied</p>' : ''}
+      <div style="margin-bottom:20px">${displayPrice}</div>
+      ${product.sale_price ? '<p style="color:var(--neon-green);font-size:13px;font-weight:600;margin-bottom:16px"><i class="fas fa-tag mr-1"></i>Special pricing applied</p>' : ''}
 
-      <p class="text-gray-600 leading-relaxed mt-5 mb-6">${product.short_description || ''}</p>
+      <p style="color:var(--text-secondary);line-height:1.7;font-size:15px;margin-bottom:28px">${product.short_description || ''}</p>
 
       <!-- Specs Grid -->
-      <div class="grid grid-cols-2 gap-3 mb-6">
-        <div class="bg-gray-50 rounded-xl p-3">
-          <div class="text-xs text-gray-500 uppercase tracking-wide mb-1">Material</div>
-          <div class="font-semibold text-gray-900 flex items-center">
-            <i class="fas fa-layer-group mr-2 text-blue-500 text-sm"></i>${product.material}
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:28px">
+        ${specs.map(([label, val, icon]) => `
+        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:12px 14px">
+          <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px">${label}</div>
+          <div style="font-size:13px;font-weight:600;color:#fff;display:flex;align-items:center;gap:6px">
+            <i class="fas ${icon}" style="color:var(--neon-cyan);font-size:12px"></i>${val}
           </div>
-        </div>
-        <div class="bg-gray-50 rounded-xl p-3">
-          <div class="text-xs text-gray-500 uppercase tracking-wide mb-1">Color</div>
-          <div class="font-semibold text-gray-900 flex items-center">
-            <span class="w-4 h-4 rounded-full border mr-2" style="background-color: ${product.color?.toLowerCase() || '#888'}"></span>${product.color}
-          </div>
-        </div>
-        ${product.weight_grams ? `
-        <div class="bg-gray-50 rounded-xl p-3">
-          <div class="text-xs text-gray-500 uppercase tracking-wide mb-1">Weight</div>
-          <div class="font-semibold text-gray-900"><i class="fas fa-weight mr-2 text-blue-500 text-sm"></i>${product.weight_grams}g</div>
-        </div>` : ''}
-        ${dims ? `
-        <div class="bg-gray-50 rounded-xl p-3">
-          <div class="text-xs text-gray-500 uppercase tracking-wide mb-1">Dimensions</div>
-          <div class="font-semibold text-gray-900 text-sm"><i class="fas fa-ruler-combined mr-2 text-blue-500"></i>${dims.x}×${dims.y}×${dims.z}mm</div>
-        </div>` : ''}
-        ${product.print_time_hours ? `
-        <div class="bg-gray-50 rounded-xl p-3">
-          <div class="text-xs text-gray-500 uppercase tracking-wide mb-1">Print Time</div>
-          <div class="font-semibold text-gray-900"><i class="fas fa-hourglass-half mr-2 text-blue-500 text-sm"></i>${product.print_time_hours}h</div>
-        </div>` : ''}
-        <div class="bg-gray-50 rounded-xl p-3">
-          <div class="text-xs text-gray-500 uppercase tracking-wide mb-1">Lead Time</div>
-          <div class="font-semibold text-gray-900"><i class="fas fa-truck mr-2 text-blue-500 text-sm"></i>${product.lead_time_days || 3} days</div>
-        </div>
+        </div>`).join('')}
       </div>
 
       <!-- Quantity -->
-      <div class="flex items-center space-x-4 mb-6">
-        <div class="flex items-center border border-gray-200 rounded-xl overflow-hidden">
-          <button onclick="changeQty(-1)" class="px-4 py-3 text-gray-600 hover:bg-gray-50 transition-colors font-bold">−</button>
-          <span id="qty-display" class="px-4 py-3 text-gray-900 font-semibold min-w-[48px] text-center">1</span>
-          <button onclick="changeQty(1)" class="px-4 py-3 text-gray-600 hover:bg-gray-50 transition-colors font-bold">+</button>
+      <div style="display:flex;align-items:center;gap:20px;margin-bottom:24px">
+        <div style="display:flex;align-items:center;border:1px solid rgba(255,255,255,0.1);border-radius:14px;overflow:hidden">
+          <button onclick="changeQty(-1)" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-secondary);background:transparent;border:none;font-size:16px;font-weight:700;transition:all 0.2s"
+                  onmouseover="this.style.background='rgba(0,245,255,0.08)';this.style.color='var(--neon-cyan)'" onmouseout="this.style.background='transparent';this.style.color='var(--text-secondary)'">−</button>
+          <span id="qty-display" style="width:48px;text-align:center;font-weight:700;color:#fff;font-size:16px">1</span>
+          <button onclick="changeQty(1)" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-secondary);background:transparent;border:none;font-size:16px;font-weight:700;transition:all 0.2s"
+                  onmouseover="this.style.background='rgba(0,245,255,0.08)';this.style.color='var(--neon-cyan)'" onmouseout="this.style.background='transparent';this.style.color='var(--text-secondary)'">+</button>
         </div>
-        <div class="text-sm text-gray-500">
-          ${product.stock_quantity === -1 ? '<i class="fas fa-infinity mr-1 text-green-500"></i>Made to order' : `${product.stock_quantity} available`}
-        </div>
+        <span style="font-size:13px;color:var(--text-muted)">
+          ${product.stock_quantity === -1 ? '<i class="fas fa-infinity mr-1" style="color:var(--neon-green)"></i>Made to order' : `${product.stock_quantity} available`}
+        </span>
       </div>
 
       <!-- Action Buttons -->
-      <div class="flex gap-3 mb-6">
-        <button 
-          onclick="addProductToCart(${product.id}, '${product.name.replace(/'/g, "\\'")}', ${product.sale_price || product.price}, '${primaryImage?.url || ''}')"
-          class="btn-primary flex-1 text-white py-4 rounded-xl font-bold text-lg shadow-lg">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px">
+        <button onclick="addProductToCart(${product.id},'${product.name.replace(/'/g, "\\'")}',${product.sale_price || product.price},'${primaryImage?.url || ''}')"
+                class="btn-solid-cyan" style="padding:16px;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer">
           <i class="fas fa-cart-plus mr-2"></i>Add to Cart
         </button>
-        <button 
-          onclick="buyNow(${product.id}, '${product.name.replace(/'/g, "\\'")}', ${product.sale_price || product.price}, '${primaryImage?.url || ''}')"
-          class="btn-accent flex-1 text-white py-4 rounded-xl font-bold text-lg shadow-lg">
+        <button onclick="buyNow(${product.id},'${product.name.replace(/'/g, "\\'")}',${product.sale_price || product.price},'${primaryImage?.url || ''}')"
+                class="btn-solid-fire" style="padding:16px;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer">
           <i class="fas fa-bolt mr-2"></i>Buy Now
         </button>
       </div>
 
       ${product.is_customizable ? `
-      <div class="bg-orange-50 border border-orange-200 rounded-xl p-4 mb-4">
-        <h4 class="font-semibold text-orange-800 mb-2"><i class="fas fa-magic mr-2"></i>This product is customizable!</h4>
-        <p class="text-sm text-orange-700">Add to cart and include your customization notes at checkout, or <a href="/preview" class="underline hover:text-orange-900">use our 3D Preview Tool</a> to visualize your design first.</p>
+      <div style="background:linear-gradient(135deg,rgba(255,107,0,0.08),rgba(255,0,128,0.06));border:1px solid rgba(255,107,0,0.25);border-radius:16px;padding:16px;margin-bottom:20px">
+        <h4 style="font-weight:700;color:#ff9940;margin-bottom:8px;font-size:14px"><i class="fas fa-magic mr-2"></i>This product is customizable!</h4>
+        <p style="font-size:13px;color:var(--text-secondary)">Add to cart and include your customization notes at checkout, or <a href="/preview" style="color:var(--neon-cyan)">use our 3D Preview Tool</a> to visualize your design first.</p>
       </div>` : ''}
 
       <!-- Trust Badges -->
-      <div class="grid grid-cols-3 gap-3 text-center text-xs text-gray-500 pt-4 border-t">
-        <div class="flex flex-col items-center space-y-1">
-          <i class="fas fa-lock text-green-500 text-lg"></i>
-          <span>Secure Payment</span>
-        </div>
-        <div class="flex flex-col items-center space-y-1">
-          <i class="fas fa-medal text-blue-500 text-lg"></i>
-          <span>Quality Guarantee</span>
-        </div>
-        <div class="flex flex-col items-center space-y-1">
-          <i class="fas fa-undo text-purple-500 text-lg"></i>
-          <span>Easy Returns</span>
-        </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.06)">
+        ${[
+          { icon:'fa-lock', label:'Secure Payment', color:'var(--neon-green)' },
+          { icon:'fa-medal', label:'Quality Guarantee', color:'var(--neon-cyan)' },
+          { icon:'fa-undo', label:'Easy Returns', color:'var(--neon-purple)' },
+        ].map(b => `
+        <div style="text-align:center">
+          <i class="fas ${b.icon}" style="color:${b.color};font-size:20px;display:block;margin-bottom:6px;filter:drop-shadow(0 0 6px ${b.color})"></i>
+          <span style="font-size:11px;color:var(--text-secondary)">${b.label}</span>
+        </div>`).join('')}
       </div>
     </div>
   </div>
+  <style>@media(min-width:768px){#product-layout{grid-template-columns:1fr 1fr}}</style>
 
-  <!-- Full Description Tab -->
-  <div class="bg-white rounded-2xl border border-gray-100 p-8 mb-12">
-    <div class="flex space-x-6 border-b mb-6">
-      <button onclick="showTab('description')" id="tab-description" class="tab-btn pb-3 border-b-2 border-blue-600 text-blue-600 font-semibold text-sm">Description</button>
-      <button onclick="showTab('specs')" id="tab-specs" class="tab-btn pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-semibold text-sm">Specifications</button>
-      <button onclick="showTab('shipping')" id="tab-shipping" class="tab-btn pb-3 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-semibold text-sm">Shipping & Info</button>
+  <!-- Description Tabs -->
+  <div class="glass-card" style="border-radius:24px;padding:0;overflow:hidden;margin-bottom:64px">
+    <div style="display:flex;border-bottom:1px solid rgba(255,255,255,0.06);padding:0 8px">
+      ${['description','specs','shipping'].map((tab, i) => {
+        const labels = ['Description','Specifications','Shipping & Info']
+        return `<button onclick="showTab('${tab}')" id="tab-${tab}"
+                        style="padding:16px 24px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:transparent;transition:all 0.2s;${i === 0 ? 'color:var(--neon-cyan);border-bottom:2px solid var(--neon-cyan)' : 'color:var(--text-secondary);border-bottom:2px solid transparent'}"
+                        class="tab-btn">${labels[i]}</button>`
+      }).join('')}
     </div>
-    <div id="tab-content-description" class="tab-content">
-      <div class="prose max-w-none text-gray-600 leading-relaxed">
+    <div style="padding:32px">
+      <div id="tab-content-description" class="tab-content" style="color:var(--text-secondary);line-height:1.8;font-size:15px">
         ${product.description || 'No description available.'}
+        ${product.tags ? `<div style="margin-top:24px;display:flex;flex-wrap:wrap;gap:8px">${product.tags.split(',').map((tag: string) => `<span style="background:rgba(0,245,255,0.06);border:1px solid rgba(0,245,255,0.15);color:var(--neon-cyan);padding:4px 12px;border-radius:50px;font-size:12px">#${tag.trim()}</span>`).join('')}</div>` : ''}
       </div>
-      ${product.tags ? `<div class="mt-6 flex flex-wrap gap-2">${product.tags.split(',').map((tag: string) => `<span class="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-xs">#${tag.trim()}</span>`).join('')}</div>` : ''}
-    </div>
-    <div id="tab-content-specs" class="tab-content hidden">
-      <table class="w-full text-sm">
-        <tbody class="divide-y divide-gray-100">
-          ${[
-            ['Material', product.material],
-            ['Color', product.color],
-            ['SKU', product.sku || 'N/A'],
-            ['Weight', product.weight_grams ? `${product.weight_grams}g` : 'N/A'],
-            ['Dimensions', dims ? `${dims.x}×${dims.y}×${dims.z} mm` : 'N/A'],
-            ['Print Time', product.print_time_hours ? `~${product.print_time_hours} hours` : 'N/A'],
-            ['Lead Time', `${product.lead_time_days || 3} business days`],
-            ['Customizable', product.is_customizable ? 'Yes' : 'No'],
-          ].map(([label, val]) => `
-          <tr>
-            <td class="py-3 pr-4 font-semibold text-gray-700 w-40">${label}</td>
-            <td class="py-3 text-gray-600">${val}</td>
-          </tr>`).join('')}
-        </tbody>
-      </table>
-    </div>
-    <div id="tab-content-shipping" class="tab-content hidden">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-600">
-        <div class="space-y-3">
-          <h4 class="font-bold text-gray-900 mb-3">Shipping Information</h4>
-          <div class="flex items-start space-x-3"><i class="fas fa-clock text-blue-500 mt-0.5"></i><div><strong>Processing:</strong> ${product.lead_time_days || 3} business days to print</div></div>
-          <div class="flex items-start space-x-3"><i class="fas fa-shipping-fast text-blue-500 mt-0.5"></i><div><strong>Standard Shipping:</strong> $8.99 (Free over $100)</div></div>
-          <div class="flex items-start space-x-3"><i class="fas fa-map-marker-alt text-blue-500 mt-0.5"></i><div><strong>From:</strong> Puerto Rico, USA</div></div>
-        </div>
-        <div class="space-y-3">
-          <h4 class="font-bold text-gray-900 mb-3">Returns & Quality</h4>
-          <div class="flex items-start space-x-3"><i class="fas fa-check-circle text-green-500 mt-0.5"></i><div>Quality inspected before shipping</div></div>
-          <div class="flex items-start space-x-3"><i class="fas fa-undo text-blue-500 mt-0.5"></i><div>30-day return policy for defects</div></div>
-          <div class="flex items-start space-x-3"><i class="fas fa-phone-alt text-blue-500 mt-0.5"></i><div>Questions? Call <a href="tel:787-403-1552" class="text-blue-600 hover:underline">787-403-1552</a></div></div>
+      <div id="tab-content-specs" class="tab-content" style="display:none">
+        <table style="width:100%;border-collapse:collapse;font-size:14px">
+          <tbody>
+            ${[
+              ['Material', product.material],
+              ['Color', product.color],
+              ['SKU', product.sku || 'N/A'],
+              ['Weight', product.weight_grams ? `${product.weight_grams}g` : 'N/A'],
+              ['Dimensions', dims ? `${dims.x}×${dims.y}×${dims.z} mm` : 'N/A'],
+              ['Print Time', product.print_time_hours ? `~${product.print_time_hours} hours` : 'N/A'],
+              ['Lead Time', `${product.lead_time_days || 3} business days`],
+              ['Customizable', product.is_customizable ? 'Yes' : 'No'],
+            ].map(([label, val]) => `
+            <tr style="border-bottom:1px solid rgba(255,255,255,0.04)">
+              <td style="padding:12px 0;font-weight:600;color:var(--text-muted);width:140px;font-size:12px;text-transform:uppercase;letter-spacing:1px">${label}</td>
+              <td style="padding:12px 0;color:#fff;font-size:14px">${val}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+      <div id="tab-content-shipping" class="tab-content" style="display:none">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:32px;font-size:14px;color:var(--text-secondary)">
+          <div>
+            <h4 style="font-weight:700;color:#fff;margin-bottom:16px">Shipping Information</h4>
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;align-items:flex-start;gap:12px"><i class="fas fa-clock" style="color:var(--neon-cyan);margin-top:2px"></i><div><strong style="color:#fff">Processing:</strong> ${product.lead_time_days || 3} business days to print</div></div>
+              <div style="display:flex;align-items:flex-start;gap:12px"><i class="fas fa-shipping-fast" style="color:var(--neon-cyan);margin-top:2px"></i><div><strong style="color:#fff">Standard Shipping:</strong> $8.99 (Free over $100)</div></div>
+              <div style="display:flex;align-items:flex-start;gap:12px"><i class="fas fa-map-marker-alt" style="color:var(--neon-cyan);margin-top:2px"></i><div><strong style="color:#fff">From:</strong> Puerto Rico, USA</div></div>
+            </div>
+          </div>
+          <div>
+            <h4 style="font-weight:700;color:#fff;margin-bottom:16px">Returns & Quality</h4>
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;align-items:flex-start;gap:12px"><i class="fas fa-check-circle" style="color:var(--neon-green);margin-top:2px"></i><div>Quality inspected before shipping</div></div>
+              <div style="display:flex;align-items:flex-start;gap:12px"><i class="fas fa-undo" style="color:var(--neon-cyan);margin-top:2px"></i><div>30-day return policy for defects</div></div>
+              <div style="display:flex;align-items:flex-start;gap:12px"><i class="fas fa-phone-alt" style="color:var(--neon-cyan);margin-top:2px"></i><div>Questions? Call <a href="tel:787-403-1552" style="color:var(--neon-cyan)">787-403-1552</a></div></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -226,8 +226,8 @@ export function getProductDetailPage(product: any, relatedProducts: any[], setti
   <!-- Related Products -->
   ${relatedProducts.length > 0 ? `
   <div>
-    <h2 class="text-2xl font-extrabold text-gray-900 mb-6">You Might Also Like</h2>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <h2 class="font-display" style="font-size:22px;font-weight:800;color:#fff;margin-bottom:24px">You Might Also Like</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px">
       ${relatedCards}
     </div>
   </div>` : ''}
@@ -239,33 +239,27 @@ function changeQty(delta) {
   qty = Math.max(1, qty + delta);
   document.getElementById('qty-display').textContent = qty;
 }
-
 function showImage(url, btn) {
-  const mainImg = document.getElementById('main-image');
-  if (mainImg) mainImg.src = url;
-  document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('border-blue-500'));
-  document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.add('border-gray-200'));
-  btn.classList.add('border-blue-500');
-  btn.classList.remove('border-gray-200');
+  const img = document.getElementById('main-image');
+  if (img) img.src = url;
+  document.querySelectorAll('.gallery-thumb').forEach(t => t.style.borderColor = 'rgba(255,255,255,0.08)');
+  btn.style.borderColor = 'var(--neon-cyan)';
 }
-
 function showTab(tab) {
-  document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+  document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
   document.querySelectorAll('.tab-btn').forEach(b => {
-    b.classList.remove('border-blue-600', 'text-blue-600');
-    b.classList.add('border-transparent', 'text-gray-500');
+    b.style.color = 'var(--text-secondary)';
+    b.style.borderBottom = '2px solid transparent';
   });
-  document.getElementById('tab-content-' + tab)?.classList.remove('hidden');
-  const activeBtn = document.getElementById('tab-' + tab);
-  activeBtn?.classList.add('border-blue-600', 'text-blue-600');
-  activeBtn?.classList.remove('border-transparent', 'text-gray-500');
+  document.getElementById('tab-content-' + tab).style.display = 'block';
+  const btn = document.getElementById('tab-' + tab);
+  btn.style.color = 'var(--neon-cyan)';
+  btn.style.borderBottom = '2px solid var(--neon-cyan)';
 }
-
 function addProductToCart(id, name, price, image) {
   addToCart(id, name, price, image, qty);
   toggleCart();
 }
-
 function buyNow(id, name, price, image) {
   addToCart(id, name, price, image, qty);
   window.location.href = '/checkout';
