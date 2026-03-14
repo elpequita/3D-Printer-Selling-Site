@@ -9,7 +9,8 @@ INSERT OR IGNORE INTO categories (name, slug, description, icon, sort_order) VAL
   ('Miniatures & Figurines', 'miniatures', 'Detailed miniatures, figurines, and collectibles', 'star', 3),
   ('Jewelry & Accessories', 'jewelry', 'Custom jewelry, pendants, and fashion accessories', 'gem', 4),
   ('Custom Orders', 'custom-orders', 'Fully customized prints from your designs', 'magic', 5),
-  ('Prototypes', 'prototypes', 'Rapid prototyping for product development', 'flask', 6);
+  ('Prototypes', 'prototypes', 'Rapid prototyping for product development', 'flask', 6),
+  ('Keychains', 'keychains', 'Custom 3D printed keychains — names, logos, shapes and more', 'key', 7);
 
 -- Insert materials
 INSERT OR IGNORE INTO materials (name, code, description, color_options, price_modifier, sort_order) VALUES
@@ -109,6 +110,50 @@ INSERT OR IGNORE INTO products (name, slug, short_description, description, cate
     '{"x": 200, "y": 100, "z": 10}',
     8.0, 5,
     'keycaps,keyboard,mechanical,gaming,custom'
+  ),
+  (
+    'Custom Name Keychain',
+    'custom-name-keychain',
+    'Personalized keychain printed with any name or word',
+    'Show off your name or a special word with this fully custom 3D printed keychain. Clean, bold lettering on a durable PLA rectangle. Key ring included. Perfect as a gift or daily carry.',
+    (SELECT id FROM categories WHERE slug='keychains'), 'PLA', 'Black', 9.99,
+    1, 1, 1, 15.0,
+    '{"x": 60, "y": 30, "z": 5}',
+    1.0, 2,
+    'keychain,name,personalized,gift,custom'
+  ),
+  (
+    'Initial Letter Keychain',
+    'initial-letter-keychain',
+    'Elegant monogram keychain with your initial in resin',
+    'A sleek monogram keychain featuring your chosen initial. Printed in high-detail resin for a premium look and feel. Available in clear, white, gray, or black. Comes with a metal key ring.',
+    (SELECT id FROM categories WHERE slug='keychains'), 'RESIN', 'White', 12.99,
+    1, 1, 1, 12.0,
+    '{"x": 40, "y": 40, "z": 5}',
+    1.0, 2,
+    'keychain,initial,monogram,letter,gift'
+  ),
+  (
+    'Logo Keychain',
+    'logo-keychain',
+    'Business or personal logo printed in 3D',
+    'Bring your brand or personal logo to life as a 3D printed keychain. Great for business giveaways, car clubs, or brand merchandise. Send us your logo and we will print it sharp and clean.',
+    (SELECT id FROM categories WHERE slug='keychains'), 'PLA', 'Black', 14.99,
+    1, 1, 1, 15.0,
+    '{"x": 60, "y": 30, "z": 5}',
+    1.0, 2,
+    'keychain,logo,branding,business,custom'
+  ),
+  (
+    'Bronco Keychain',
+    'bronco-keychain',
+    'Bold Ford Bronco logo keychain — black and white 3D print',
+    'A sharp 3D printed keychain featuring the iconic Ford Bronco bucking horse logo with the BRONCO wordmark in raised white letters on a black PLA background. Perfect for Bronco owners and off-road enthusiasts. Key ring included.',
+    (SELECT id FROM categories WHERE slug='keychains'), 'PLA', 'Black', 11.99,
+    1, 1, 0, 15.0,
+    '{"x": 75, "y": 30, "z": 5}',
+    1.0, 2,
+    'keychain,bronco,ford,truck,offroad,car,gift'
   );
 
 -- Insert product images (using placeholder image service)
@@ -121,6 +166,16 @@ INSERT OR IGNORE INTO product_images (product_id, url, alt_text, is_primary, sor
   (6, '/static/images/placeholder-arch.svg', 'Architectural Model', 1, 0),
   (7, '/static/images/placeholder-wallart.svg', 'Topographic Wall Art', 1, 0),
   (8, '/static/images/placeholder-keycaps.svg', 'Keycaps Set', 1, 0);
+
+-- Keychain product images
+INSERT OR IGNORE INTO product_images (product_id, url, alt_text, is_primary, sort_order)
+  SELECT id, '/static/images/placeholder-keychain.svg', 'Custom Name Keychain', 1, 0 FROM products WHERE slug='custom-name-keychain';
+INSERT OR IGNORE INTO product_images (product_id, url, alt_text, is_primary, sort_order)
+  SELECT id, '/static/images/placeholder-keychain.svg', 'Initial Letter Keychain', 1, 0 FROM products WHERE slug='initial-letter-keychain';
+INSERT OR IGNORE INTO product_images (product_id, url, alt_text, is_primary, sort_order)
+  SELECT id, '/static/images/placeholder-keychain.svg', 'Logo Keychain', 1, 0 FROM products WHERE slug='logo-keychain';
+INSERT OR IGNORE INTO product_images (product_id, url, alt_text, is_primary, sort_order)
+  SELECT id, '/static/images/keychain-bronco.jpg', 'Bronco Keychain', 1, 0 FROM products WHERE slug='bronco-keychain';
 
 -- Insert site settings
 INSERT OR IGNORE INTO site_settings (key, value, type, description) VALUES

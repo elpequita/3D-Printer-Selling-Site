@@ -1,11 +1,11 @@
-export function getHomePage(featuredProducts: any[], categories: any[], settings: Record<string, string>): string {
+export function getHomePage(featuredProducts: any[], categories: any[], settings: Record<string, string>, keychains: any[] = []): string {
   const heroTitle = settings.hero_title || 'Custom 3D Printing Services'
   const heroSubtitle = settings.hero_subtitle || 'From concept to reality — precision, quality, and speed.'
 
   const categoryIconMap: Record<string, string> = {
     'home': 'fa-home', 'wrench': 'fa-wrench', 'star': 'fa-star',
     'gem': 'fa-gem', 'magic': 'fa-magic', 'flask': 'fa-flask',
-    'cube': 'fa-cube', 'cog': 'fa-cog'
+    'cube': 'fa-cube', 'cog': 'fa-cog', 'key': 'fa-key'
   }
 
   const neonColors = ['var(--neon-cyan)', 'var(--neon-purple)', 'var(--neon-green)', 'var(--neon-orange)', 'var(--neon-pink)', 'var(--neon-cyan)']
@@ -156,6 +156,69 @@ export function getHomePage(featuredProducts: any[], categories: any[], settings
   </div>
   <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px">
     ${categoryCards}
+  </div>
+</section>
+
+<!-- Keychains Spotlight -->
+<section style="padding:80px 24px;background:linear-gradient(135deg,rgba(191,0,255,0.04),rgba(0,245,255,0.03));border-top:1px solid rgba(255,255,255,0.04);border-bottom:1px solid rgba(255,255,255,0.04)">
+  <div style="max-width:1280px;margin:0 auto">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:48px;flex-wrap:wrap;gap:16px">
+      <div>
+        <span style="font-size:12px;font-weight:700;color:var(--neon-purple);text-transform:uppercase;letter-spacing:3px">
+          <i class="fas fa-key" style="margin-right:6px"></i>Keychains
+        </span>
+        <h2 class="font-display" style="font-size:clamp(24px,3vw,36px);font-weight:800;color:#fff;margin-top:10px">Custom Keychains</h2>
+        <p style="color:var(--text-secondary);margin-top:6px;max-width:500px">The perfect personalized gift — your name, logo, or favorite shape, printed in 3D</p>
+      </div>
+      <a href="/products?category=keychains" style="color:var(--neon-purple);text-decoration:none;font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px;border:1px solid rgba(191,0,255,0.3);padding:10px 20px;border-radius:50px;transition:all 0.3s"
+         onmouseover="this.style.background='rgba(191,0,255,0.08)';this.style.boxShadow='0 0 15px rgba(191,0,255,0.2)'"
+         onmouseout="this.style.background='none';this.style.boxShadow='none'">
+        View All Keychains <i class="fas fa-arrow-right"></i>
+      </a>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px">
+      ${keychains.length > 0 ? keychains.map((p: any, idx: number) => {
+        const neon = ['var(--neon-purple)','var(--neon-cyan)','var(--neon-pink)','var(--neon-orange)'][idx % 4]
+        return `
+        <div class="glass-card" style="border-radius:18px;overflow:hidden;display:flex;flex-direction:column;cursor:pointer;border:1px solid rgba(191,0,255,0.12);transition:all 0.3s"
+             onclick="window.location='/products/${p.slug}'"
+             onmouseover="this.style.borderColor='${neon}';this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 40px rgba(0,0,0,0.4),0 0 20px ${neon}22'"
+             onmouseout="this.style.borderColor='rgba(191,0,255,0.12)';this.style.transform='none';this.style.boxShadow='none'">
+          <div style="position:relative;height:170px;background:linear-gradient(135deg,#080d18,#0f0820);overflow:hidden">
+            <img src="${p.primary_image || ''}" alt="${p.name}"
+                 style="width:100%;height:100%;object-fit:cover;transition:transform 0.5s ease"
+                 onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'"
+                 onerror="this.style.display='none';this.parentNode.querySelector('.kc-fallback').style.display='flex'">
+            <div class="kc-fallback" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;background:linear-gradient(135deg,#080d18,#0f0820)">
+              <i class="fas fa-key" style="color:${neon};font-size:42px;filter:drop-shadow(0 0 12px ${neon})"></i>
+            </div>
+            <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(2,4,10,0.6) 0%,transparent 60%)"></div>
+            ${p.is_customizable ? `<span style="position:absolute;top:10px;left:10px;background:rgba(191,0,255,0.8);color:#fff;font-size:10px;padding:3px 9px;border-radius:20px;font-weight:700;backdrop-filter:blur(8px)"><i class="fas fa-magic" style="margin-right:4px"></i>Custom</span>` : ''}
+          </div>
+          <div style="padding:14px 16px;flex:1;display:flex;flex-direction:column;gap:6px">
+            <h3 style="font-size:14px;font-weight:700;color:#fff;line-height:1.3">${p.name}</h3>
+            <p style="font-size:12px;color:var(--text-secondary);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${p.short_description || ''}</p>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:8px">
+              <span style="font-size:10px;color:var(--text-muted);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);padding:2px 8px;border-radius:20px">
+                <i class="fas fa-layer-group" style="color:${neon};margin-right:3px"></i>${p.material}
+              </span>
+              <span style="color:${neon};font-weight:800;font-size:16px">$${parseFloat(p.price).toFixed(2)}</span>
+            </div>
+          </div>
+          <div style="padding:0 16px 14px">
+            <button onclick="addToCart(${p.id},'${p.name.replace(/'/g, "\\'")}',${p.price},'${p.primary_image || ''}');event.stopPropagation()"
+                    style="width:100%;padding:9px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;background:rgba(191,0,255,0.15);border:1px solid rgba(191,0,255,0.4);color:var(--neon-purple);transition:all 0.3s"
+                    onmouseover="this.style.background='rgba(191,0,255,0.3)'" onmouseout="this.style.background='rgba(191,0,255,0.15)'">
+              <i class="fas fa-cart-plus" style="margin-right:6px"></i>Add to Cart
+            </button>
+          </div>
+        </div>`
+      }).join('') : `
+      <div style="grid-column:1/-1;text-align:center;padding:60px 0;color:var(--text-muted)">
+        <i class="fas fa-key" style="font-size:48px;margin-bottom:16px;display:block;opacity:0.2"></i>
+        <p style="font-size:16px">Keychains coming soon.</p>
+      </div>`}
+    </div>
   </div>
 </section>
 

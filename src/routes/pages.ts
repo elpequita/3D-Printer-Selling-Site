@@ -14,7 +14,7 @@ export const pagesRouter = new Hono<{ Bindings: Bindings }>()
 
 pagesRouter.get('/', async (c) => {
   const { DB } = c.env
-  const [featuredResult, categoriesResult, settings] = await Promise.all([
+  const [featuredResult, categoriesResult, keychainsResult, settings] = await Promise.all([
     DB.prepare(`
       SELECT p.*, pi.url as primary_image, cat.name as category_name
       FROM products p
@@ -23,14 +23,22 @@ pagesRouter.get('/', async (c) => {
       WHERE p.is_featured = 1 AND p.is_available = 1
       ORDER BY p.sort_order ASC LIMIT 8
     `).all(),
-    DB.prepare(`SELECT * FROM categories ORDER BY sort_order ASC LIMIT 6`).all(),
+    DB.prepare(`SELECT * FROM categories ORDER BY sort_order ASC LIMIT 8`).all(),
+    DB.prepare(`
+      SELECT p.*, pi.url as primary_image
+      FROM products p
+      LEFT JOIN product_images pi ON p.id = pi.product_id AND pi.is_primary = 1
+      LEFT JOIN categories cat ON p.category_id = cat.id
+      WHERE cat.slug = 'keychains' AND p.is_available = 1
+      ORDER BY p.id ASC LIMIT 4
+    `).all(),
     DB.prepare(`SELECT key, value FROM site_settings`).all()
   ])
 
   const settingsMap: Record<string, string> = {}
   for (const s of (settings.results as any[])) settingsMap[s.key] = s.value
 
-  return c.html(getLayout(getHomePage(featuredResult.results as any[], categoriesResult.results as any[], settingsMap), 'Home', settingsMap))
+  return c.html(getLayout(getHomePage(featuredResult.results as any[], categoriesResult.results as any[], settingsMap, keychainsResult.results as any[]), 'Home', settingsMap))
 })
 
 pagesRouter.get('/products', async (c) => {
