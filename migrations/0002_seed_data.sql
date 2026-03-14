@@ -175,7 +175,9 @@ INSERT OR IGNORE INTO product_images (product_id, url, alt_text, is_primary, sor
 INSERT OR IGNORE INTO product_images (product_id, url, alt_text, is_primary, sort_order)
   SELECT id, '/static/images/placeholder-keychain.svg', 'Logo Keychain', 1, 0 FROM products WHERE slug='logo-keychain';
 INSERT OR IGNORE INTO product_images (product_id, url, alt_text, is_primary, sort_order)
-  SELECT id, '/static/images/keychain-bronco.jpg', 'Bronco Keychain', 1, 0 FROM products WHERE slug='bronco-keychain';
+  SELECT id, '/static/images/keychain-bronco.jpg', 'Bronco Keychain - front view', 1, 0 FROM products WHERE slug='bronco-keychain';
+INSERT OR IGNORE INTO product_images (product_id, url, alt_text, is_primary, sort_order)
+  SELECT id, '/static/images/keychain-bronco-2.jpg', 'Bronco Keychain - detail shot', 0, 1 FROM products WHERE slug='bronco-keychain';
 
 -- Insert site settings
 INSERT OR IGNORE INTO site_settings (key, value, type, description) VALUES
